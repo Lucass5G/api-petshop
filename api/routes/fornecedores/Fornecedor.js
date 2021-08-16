@@ -1,3 +1,5 @@
+const TableSupplier = require("./TableSupplier");
+
 class Fornecedor {
   constructor({
     id,
@@ -15,6 +17,29 @@ class Fornecedor {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.version = version;
+  }
+
+  async create() {
+    const res = await TableSupplier.insert({
+      empresa: this.empresa,
+      email: this.email,
+      categoria: this.categoria,
+    });
+
+    (this.id = res.id),
+      (this.createdAt = res.createdAt),
+      (this.updatedAt = res.updatedAt),
+      (this.version = res.version);
+  }
+
+  async load() {
+    const supplierFound = await TableSupplier.pickForId(this.id);
+    this.empresa = supplierFound.empresa;
+    this.email = supplierFound.email;
+    this.categoria = supplierFound.categoria;
+    this.createdAt = supplierFound.createdAt;
+    this.updatedAt = supplierFound.updatedAt;
+    this.version = supplierFound.version;
   }
 }
 
