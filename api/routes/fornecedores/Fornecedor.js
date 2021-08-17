@@ -41,6 +41,26 @@ class Fornecedor {
     this.updatedAt = supplierFound.updatedAt;
     this.version = supplierFound.version;
   }
+
+  async update() {
+    await TableSupplier.pickForId(this.id);
+    const campos = ["empresa", "email", "categoria"];
+    const dataForUpdate = {};
+
+    campos.forEach((campo) => {
+      const valor = this[campo];
+      if (typeof valor === "string" && valor.length > 0) {
+        dataForUpdate[campo] = valor;
+      }
+    });
+
+    //retorna uma lista com o nome das chaves que o objeto possui
+    if (Object.keys(dataForUpdate).length === 0) {
+      throw new Error("Não foram fornecidos dados para atualizar!");
+    }
+
+    await TableSupplier.update(this.id, dataForUpdate);
+  }
 }
 
 module.exports = Fornecedor;
