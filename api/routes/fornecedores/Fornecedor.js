@@ -1,4 +1,5 @@
 const TableSupplier = require("./TableSupplier");
+const InvalidField = require("../../errors/InvalidField");
 
 class Fornecedor {
   constructor({
@@ -70,11 +71,11 @@ class Fornecedor {
   validate() {
     const campos = ["empresa", "email", "categoria"];
 
-    campos.forEach((campo) => {
-      const valor = this[campo];
+    campos.forEach((field) => {
+      const valor = this[field];
 
       if (typeof valor !== "string" || valor.length === 0) {
-        throw new Error(`O campo ${campo} está inválido`);
+        throw new InvalidField(field);
       }
     });
   }
