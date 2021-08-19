@@ -1,10 +1,12 @@
 const router = require("express").Router();
 const TableSupplier = require("./TableSupplier");
 const Fornecedor = require("./Fornecedor");
+const SupplierSerializable = require("../../Serializable").SupplierSerializable;
 
 router.get("/", async (req, res) => {
   const result = await TableSupplier.listAll();
-  res.send(JSON.stringify(result));
+  const serializable = new SupplierSerializable(res.getHeader("Content-Type"));
+  res.send(serializable.serialize(result));
 });
 
 router.post("/", async (req, res, next) => {
@@ -12,7 +14,10 @@ router.post("/", async (req, res, next) => {
     const dadosRecebidos = req.body;
     const fornecedor = new Fornecedor(dadosRecebidos);
     await fornecedor.create();
-    res.status(201).send(JSON.stringify(fornecedor));
+    const serializable = new SupplierSerializable(
+      res.getHeader("Content-Type")
+    );
+    res.status(201).send(serializable.serialize(fornecedor));
   } catch (error) {
     next(error);
   }
@@ -23,7 +28,10 @@ router.get("/:idFornecedor", async (req, res, next) => {
     const idFornecedor = req.params.idFornecedor;
     const fornecedor = new Fornecedor({ id: idFornecedor });
     await fornecedor.load();
-    res.send(JSON.stringify(fornecedor));
+    const serializable = new SupplierSerializable(
+      res.getHeader("Content-Type")
+    );
+    res.send(serializable.serialize(fornecedor));
   } catch (error) {
     next(error);
   }

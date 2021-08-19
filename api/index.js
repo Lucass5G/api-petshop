@@ -2,10 +2,28 @@ const express = require("express");
 const config = require("config");
 const NotFound = require("./errors/NotFound");
 const InvalidField = require("./errors/InvalidField");
+const formatAccept = require("./Serializable.js").formatAccept;
 
 const app = express();
 
 const port = config.get("api.port");
+
+app.use((req, res, next) => {
+  let reqFormatter = req.header("Accept");
+
+  if (reqFormatter === "*/*") {
+    reqFormatter = "application/json";
+  }
+
+  if (formatAccept.indexOf(reqFormatter) === -1) {
+    res.status(406).send("Not Acceptable");
+    res.end();
+    return;
+  }
+
+  res.setHeader("Content-Type", "application/json");
+  next();
+});
 
 app.use(express.json());
 

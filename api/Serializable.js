@@ -13,3 +13,16 @@ class Serializable {
     );
   }
 }
+
+class SupplierSerializable extends Serializable {
+  constructor(contentType) {
+    super();
+    this.contentType = contentType;
+  }
+}
+
+module.exports = {
+  Serializable: Serializable,
+  SupplierSerializable: SupplierSerializable,
+  formatAccept: ["application/json"],
+};
