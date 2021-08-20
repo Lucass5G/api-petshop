@@ -29,7 +29,8 @@ router.get("/:idFornecedor", async (req, res, next) => {
     const fornecedor = new Fornecedor({ id: idFornecedor });
     await fornecedor.load();
     const serializable = new SupplierSerializable(
-      res.getHeader("Content-Type")
+      res.getHeader("Content-Type"),
+      ["email", "createdAt", "updatedAt", "version"]
     );
     res.send(serializable.serialize(fornecedor));
   } catch (error) {
